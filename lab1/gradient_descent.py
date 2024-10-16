@@ -27,21 +27,20 @@ def gradient_descent(start, gradient, step_length, limit, domain):
         x = x - step_length * d
         points.append(x)
         steps += 1
-    return np.array(points)
+    return points
 
 # funtion 1.
-# xs = np.linspace(-4 * np.pi, 4 * np.pi)
-# points = gradient_descent(0.4, deriv_f, 0.1, 10, xs)
-# plt.plot(xs, f(xs))
+# D1 = np.linspace(-4 * np.pi, 4 * np.pi)
+# points = gradient_descent(0.4, deriv_f, 0.1, 10, D1)
+# plt.plot(D1, f(D1))
 # plt.plot(points, f(points), '-o')
 # plt.show()
 
 
 # function 2
-xy_domain = np.linspace(-2, 2)
-points = gradient_descent([-0.6, -0.4], deriv_g, 0.3, 25, xy_domain)
-print(points)
-x, y = np.meshgrid(xy_domain, xy_domain)
+D2 = np.linspace(-2, 2)
+points = gradient_descent([0.2, 0.3], deriv_g, 0.2, 25, D2)
+x, y = np.meshgrid(D2, D2)
 plt.contourf(x, y, g([x, y]))
 plt.plot([p[0] for p in points],  [p[1] for p in points], '-o', color='red')
 plt.show()
