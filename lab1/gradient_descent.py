@@ -47,11 +47,3 @@ def plot_g(points):
     plt.contourf(x, y, g([x, y]))
     plt.plot([p[0] for p in points], [p[1] for p in points], "-o", color="red")
     plt.show()
-
-
-# function 1
-points = gradient_descent(1, deriv_f, 0.1, 25, np.linspace(-4 * np.pi, 4 * np.pi))
-plot_f(points)
-
-
-# function 2
