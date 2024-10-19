@@ -1,0 +1,30 @@
+import gradient_descent
+import numpy
+import argparse
+
+
+def parse_arguments():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("function", choices=["f", "g"])
+    parser.add_argument("start_point", type=float)
+    parser.add_argument("step_length", type=float)
+    parser.add_argument("step_limit", type=float)
+    parser.add_argument("--visualize", action="store_true")
+
+    args = parser.parse_args()
+    function = True if args.function == "f" else False
+    deriv_function = deriv_f if function else deriv_g
+    domain = np.linspace(-4 * np.pi, 4 * np.pi) if function else np.linspace(-2, 2)
+    points = gradient_descent(
+        args.start_point, deriv_function, args.step_length, args.step_limit, domain
+    )
+
+    if args.visualize:
+        if function:
+            plot_f(points)
+        else:
+            plot_g(points)
+
+
+if __name__ == "__main__":
+    parse_arguments()
