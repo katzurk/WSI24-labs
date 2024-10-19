@@ -27,18 +27,20 @@ def in_bounds(point, domain):
     return (domain.min() < point).any() and (domain.max() > point).any()
 
 
-def gradient_descent(start, step_length, limit, gradient, domain):
+def gradient_descent(start, step_length, gradient, domain, limit=float('inf')):
     x = np.array(start)
     points = [x]
     steps = 0
-    while steps <= limit and in_bounds(x, domain):
+    while steps < limit and in_bounds(x, domain):
         d = np.array(gradient(x))
+        if d < 1e-05:
+            break
         x = x - step_length * d
         if not in_bounds(x, domain):
             break
         points.append(x)
         steps += 1
-    return np.array(points)
+    return np.array(points), steps
 
 
 def plot_f(points):
@@ -56,46 +58,46 @@ def plot_g(points):
     plt.show()
 
 
-def generate_dataframe(array, parameter_index, start, step_length, limit, D):
+def generate_dataframe(array, parameter_index, start, step_length, D):
     data = []
     for point in array:
         match parameter_index:
             case 0:
-                points = gradient_descent(point, step_length, limit, deriv_f, D)
+                points, steps = gradient_descent(point, step_length, deriv_f, D)
                 column = "starting point"
             case 1:
-                points = gradient_descent(start, point, limit, deriv_f, D)
+                points, steps = gradient_descent(start, point, deriv_f, D)
                 column = "step size"
             case 2:
-                points = gradient_descent(start, step_length, point, deriv_f, D)
+                points, steps = gradient_descent(start, step_length, deriv_f, D, point)
                 column = "iterations limit"
             case _:
                 raise ValueError("Invalid parameter index")
         result = f(points[-1])
-        data.append([point, result])
-    dataframe = pd.DataFrame(data, columns=[column, "found local minimum"]).round(2)
+        data.append([point, points[-1], result, steps])
+    dataframe = pd.DataFrame(data, columns=[column, "x of the found local minimum", "y of the found local minimum", "number of steps"]).round(2)
     return dataframe
 
 
-def run_tests_function_f(start, step_length, limit):
+def run_tests_function_f(start, step_length):
     D = np.linspace(-4 * np.pi, 4 * np.pi)
 
     # start point
     start_points = np.random.uniform(-4 * np.pi, 4 * np.pi, size=200)
-    data = generate_dataframe(start_points, 0, start, step_length, limit, D)
+    data = generate_dataframe(start_points, 0, start, step_length, D)
     data.to_csv("test1.csv")
 
     # step size
     step_sizes = np.arange(0, 2, 0.05)[1:]
-    data = generate_dataframe(step_sizes, 1, start, step_length, limit, D)
+    data = generate_dataframe(step_sizes, 1, start, step_length, D)
     data.to_csv("test2.csv")
 
     # iterations limit
     limits = np.arange(5, 200, 5)
-    data = generate_dataframe(limits, 2, start, step_length, limit, D)
+    data = generate_dataframe(limits, 2, start, step_length, D)
     data.to_csv("test3.csv")
 
     return data
 
 
-print(run_tests_function_f(7, 0.1, 100))
+# print(run_tests_function_f(7, 0.1))
