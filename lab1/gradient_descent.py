@@ -22,6 +22,7 @@ def deriv_g(point):
     dy = (3 - 6 * y**2) * x * np.e ** (-(x**2) - (y**2))
     return (dx, dy)
 
+
 def in_bounds(point, domain):
     return (domain.min() < point).any() and (domain.max() > point).any()
 
@@ -33,7 +34,8 @@ def gradient_descent(start, step_length, limit, gradient, domain):
     while steps <= limit and in_bounds(x, domain):
         d = np.array(gradient(x))
         x = x - step_length * d
-        if not in_bounds(x, domain): break
+        if not in_bounds(x, domain):
+            break
         points.append(x)
         steps += 1
     return np.array(points)
@@ -42,7 +44,7 @@ def gradient_descent(start, step_length, limit, gradient, domain):
 def plot_f(points):
     D = np.linspace(-4 * np.pi, 4 * np.pi)
     plt.plot(D, f(D))
-    plt.plot(points, f(points), '-o')
+    plt.plot(points, f(points), "-o")
     plt.show()
 
 
@@ -75,7 +77,6 @@ def generate_dataframe(array, parameter_index, start, step_length, limit, D):
     return dataframe
 
 
-
 def run_tests_function_f(start, step_length, limit):
     D = np.linspace(-4 * np.pi, 4 * np.pi)
 
@@ -95,7 +96,6 @@ def run_tests_function_f(start, step_length, limit):
     data.to_csv("test3.csv")
 
     return data
-
 
 
 print(run_tests_function_f(7, 0.1, 100))

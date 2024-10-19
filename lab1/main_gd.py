@@ -6,7 +6,7 @@ import argparse
 def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument("function", choices=["f", "g"])
-    parser.add_argument("start_point", nargs="+", type=float) # 1D or 2D point
+    parser.add_argument("start_point", nargs="+", type=float)  # 1D or 2D point
     parser.add_argument("step_length", type=float)
     parser.add_argument("step_limit", type=float)
     parser.add_argument("--visualize", action="store_true")
