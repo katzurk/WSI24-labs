@@ -26,7 +26,7 @@ def in_bounds(point, domain):
     return (domain.min() < point).any() and (domain.max() > point).any()
 
 
-def gradient_descent(start, gradient, step_length, limit, domain):
+def gradient_descent(start, step_length, limit, gradient, domain):
     x = np.array(start)
     points = [x]
     steps = 0
@@ -54,11 +54,25 @@ def plot_g(points):
     plt.show()
 
 
-def generate_dataframe(data_list, column_names, filename):
-    data = pd.DataFrame(data_list, columns=column_names)
-    data = data.round(2)
-    data.to_csv(filename)
-    return data
+def generate_dataframe(array, parameter_index, start, step_length, limit, D):
+    data = []
+    for point in array:
+        match parameter_index:
+            case 0:
+                points = gradient_descent(point, step_length, limit, deriv_f, D)
+                column = "starting point"
+            case 1:
+                points = gradient_descent(start, point, limit, deriv_f, D)
+                column = "step size"
+            case 2:
+                points = gradient_descent(start, step_length, point, deriv_f, D)
+                column = "iterations limit"
+            case _:
+                raise ValueError("Invalid parameter index")
+        result = f(points[-1])
+        data.append([point, result])
+    dataframe = pd.DataFrame(data, columns=[column, "found local minimum"]).round(2)
+    return dataframe
 
 
 
@@ -66,25 +80,22 @@ def run_tests_function_f(start, step_length, limit):
     D = np.linspace(-4 * np.pi, 4 * np.pi)
 
     # start point
-    data_list = []
     start_points = np.random.uniform(-4 * np.pi, 4 * np.pi, size=200)
-    for point in start_points:
-        points = gradient_descent(point, deriv_f, step_length, limit, D)
-        result = f(points[-1])
-        data_list.append([point, result])
-    generate_dataframe(data_list, ["starting_point", "found local minimum"], "test1.csv")
+    data = generate_dataframe(start_points, 0, start, step_length, limit, D)
+    data.to_csv("test1.csv")
 
     # step size
-    data_list = []
     step_sizes = np.arange(0, 2, 0.05)[1:]
-    for step in step_sizes:
-        points = gradient_descent(start, deriv_f, step, limit, D)
-        result = f(points[-1])
-        data_list.append([step, result])
-    data = generate_dataframe(data_list, ["step size", "found local minimum"], "test2.csv")
+    data = generate_dataframe(step_sizes, 1, start, step_length, limit, D)
+    data.to_csv("test2.csv")
+
+    # iterations limit
+    limits = np.arange(5, 200, 5)
+    data = generate_dataframe(limits, 2, start, step_length, limit, D)
+    data.to_csv("test3.csv")
 
     return data
 
 
 
-print(run_tests_function_f(1, 0.1, 100))
+print(run_tests_function_f(7, 0.1, 100))
