@@ -59,6 +59,7 @@ def plot_g(points):
 
 
 def generate_dataframe(array, function, parameter_index, start, step_length, D, limit):
+    # generates the dataframe object over a range of values of a specific parameter
     data = []
     deriv = deriv_f if function == f else deriv_g
     for point in array:
@@ -76,19 +77,47 @@ def generate_dataframe(array, function, parameter_index, start, step_length, D, 
                 raise ValueError("Invalid parameter index")
         result = function(points[-1])
         data.append([start, step_length, points[-1], result, steps])
-    dataframe = pd.DataFrame(data, columns=["starting point", "step_length", "location of the found local minimum", "value of the found local minimum", "number of steps"]).round(2)
+    dataframe = pd.DataFrame(
+        data,
+        columns=[
+            "starting point",
+            "step_length",
+            "location of the found local minimum",
+            "value of the found local minimum",
+            "number of steps",
+        ],
+    ).round(2)
     return dataframe
 
 
-def repeat_dataframe_for_points(points_array, parameter_array, parameter_index, step_length, D, folder_name, function, limit):
+def repeat_dataframe_for_points(
+    points_array,
+    parameter_array,
+    parameter_index,
+    step_length,
+    D,
+    folder_name,
+    function,
+    limit,
+):
+    # repeats the data generation for every starting point in points_array
     iteration = 1
     for start_point in points_array:
-        data = generate_dataframe(parameter_array, function, parameter_index, start_point, step_length, D, limit)
+        data = generate_dataframe(
+            parameter_array,
+            function,
+            parameter_index,
+            start_point,
+            step_length,
+            D,
+            limit,
+        )
         data.to_csv(f"function_{function.__name__}/{folder_name}/{iteration}.csv")
         iteration += 1
 
 
 def run_tests_function_f(start, step_length, limit=1000000):
+    # tests a range of parameter values and generates dataframe object
     D = np.linspace(-4 * np.pi, 4 * np.pi)
 
     # start point
@@ -101,11 +130,15 @@ def run_tests_function_f(start, step_length, limit=1000000):
 
     # step length
     step_sizes = np.arange(0, 2, 0.05)[1:]
-    repeat_dataframe_for_points(start_points, step_sizes, 1, step_length, D, "step_length", f, limit)
+    repeat_dataframe_for_points(
+        start_points, step_sizes, 1, step_length, D, "step_length", f, limit
+    )
 
     # iterations limit
     limits = np.arange(5, 200, 5)
-    repeat_dataframe_for_points(start_points, limits, 2, step_length, D, "iterations_limit", f, limit)
+    repeat_dataframe_for_points(
+        start_points, limits, 2, step_length, D, "iterations_limit", f, limit
+    )
 
     return data
 
@@ -123,11 +156,15 @@ def run_tests_function_g(start, step_length, limit=1000000):
 
     # step length
     step_sizes = np.arange(0, 2, 0.05)[1:]
-    repeat_dataframe_for_points(start_points, step_sizes, 1, step_length, D, "step_length", g, limit)
+    repeat_dataframe_for_points(
+        start_points, step_sizes, 1, step_length, D, "step_length", g, limit
+    )
 
     # iterations limit
     limits = np.arange(5, 200, 5)
-    repeat_dataframe_for_points(start_points, limits, 2, step_length, D, "iterations_limit", g, limit)
+    repeat_dataframe_for_points(
+        start_points, limits, 2, step_length, D, "iterations_limit", g, limit
+    )
 
     return data
 
