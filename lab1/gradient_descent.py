@@ -43,17 +43,25 @@ def gradient_descent(start, step_length, gradient, domain, limit=1000000):
     return np.array(points), steps
 
 
-def plot_f(points):
+def plot_f(points, filename):
     D = np.linspace(-4 * np.pi, 4 * np.pi)
     plt.plot(D, f(D))
     plt.plot(points, f(points), "-o")
+    plt.title('Szukanie minimum lokalnego metodą gradientu prostego')
+    plt.xlabel('oś X')
+    plt.ylabel('oś Y')
+    plt.savefig(filename)
     plt.show()
 
 
-def plot_g(points):
+def plot_g(points, filename):
     D = np.linspace(-2, 2)
     x, y = np.meshgrid(D, D)
-    plt.contourf(x, y, g([x, y]))
-    plt.plot([p[0] for p in points], [p[1] for p in points], "-o", color="red")
+    plt.contour(x, y, g([x, y]), cmap='viridis')
+    plt.plot([p[0] for p in points], [p[1] for p in points], "-o")
+    plt.title('Szukanie minimum lokalnego metodą gradientu prostego')
+    plt.xlabel('oś X')
+    plt.ylabel('oś Y')
+    plt.savefig(filename)
     plt.show()
 

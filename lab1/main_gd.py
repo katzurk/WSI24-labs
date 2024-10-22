@@ -12,6 +12,7 @@ def parse_arguments():
     parser.add_argument("step_length", type=float)
     parser.add_argument("--step_limit", type=int, nargs='?', default=1000000)
     parser.add_argument("--visualize", action="store_true")
+    parser.add_argument("--plot_filename", type=str, default="plot.png")
     parser.add_argument("--run_tests", action="store_true")
 
     args = parser.parse_args()
@@ -31,9 +32,9 @@ def parse_arguments():
             args.start_point, args.step_length, deriv_function, domain, args.step_limit
         )
         if args.function == "f":
-            plot_f(points)
+            plot_f(points, args.plot_filename)
         else:
-            plot_g(points)
+            plot_g(points, args.plot_filename)
 
         print("location of found local minimum: ", np.round(points[-1], 2))
         print("number of steps: ", steps)
