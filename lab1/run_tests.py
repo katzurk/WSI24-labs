@@ -23,17 +23,17 @@ def generate_dataframe(array, function, parameter_index, start, step_length, D, 
         points = np.round(points, 2)
         result = function(points[-1])
         data.append([np.round(start, 2), step_length, points[-1], result, steps])
-    dataframe = pd.DataFrame(
-        data,
-        columns=[
+    columns_names=[
             "starting point",
             "step_length",
             "location of the found local minimum",
             "value of the found local minimum",
             "number of steps",
-        ],
-    ).round(2)
-    return dataframe
+        ]
+    scalar_columns = ["step_length", "value of the found local minimum", "number of steps"]
+    dataframe = pd.DataFrame(data,columns=columns_names).round(2)
+    data_statisctics = dataframe[scalar_columns].agg(['mean', 'std', 'min', 'max']).transpose()
+    return dataframe, data_statisctics
 
 
 def repeat_dataframe_for_points(
@@ -49,7 +49,7 @@ def repeat_dataframe_for_points(
     # repeats the data generation for every starting point in points_array
     iteration = 1
     for start_point in points_array:
-        data = generate_dataframe(
+        data, statistics = generate_dataframe(
             parameter_array,
             function,
             parameter_index,
@@ -59,6 +59,7 @@ def repeat_dataframe_for_points(
             limit,
         )
         data.to_csv(f"function_{function.__name__}/{folder_name}/{iteration}.csv")
+        statistics.to_csv(f"function_{function.__name__}/{folder_name}/{iteration}_stat.csv")
         iteration += 1
 
 
@@ -73,8 +74,9 @@ def run_tests_gradient_descent(start, function_name, step_length, D, limit=10000
         test_points = np.random.uniform(D.min(), D.max(), size=(10, 2))
 
     # start point
-    data = generate_dataframe(start_points, function, 0, start, step_length, D, limit)
+    data, statistics = generate_dataframe(start_points, function, 0, start, step_length, D, limit)
     data.to_csv(f"function_{function.__name__}/starting_point/1.csv")
+    statistics.to_csv(f"function_{function.__name__}/starting_point/1_stat.csv")
 
     # step length
     step_sizes = np.arange(0, 1.5, 0.05)[1:]

@@ -23,6 +23,7 @@ def parse_arguments():
         for directory in directories:
             os.makedirs(directory, exist_ok=True)
         run_tests_gradient_descent(args.start_point, args.function, args.step_length, domain, args.step_limit)
+        print("a")
 
     if args.visualize:
         deriv_function = deriv_f if args.function == "f" else deriv_g
