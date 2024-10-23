@@ -3,24 +3,39 @@ import pandas as pd
 import numpy as np
 
 
-def generate_dataframe(array, function, parameter_index, start, step_length, D, limit):
+def generate_dataframe(
+    array, function, parameter_index, start, step_length, D, limit, iteration=1
+):
     # generates the dataframe object over a range of values of a specific parameter
     data = []
     deriv = deriv_f if function == f else deriv_g
-    for point in array:
+    plot = plot_f if function == f else plot_g
+    for id_p, point in enumerate(array):
         match parameter_index:
             case 0:
                 points, steps = gradient_descent(point, step_length, deriv, D, limit)
                 start = point
+                folder = "starting_point"
             case 1:
                 points, steps = gradient_descent(start, point, deriv, D, limit)
                 step_length = point
+                folder = "step_length"
             case 2:
                 points, steps = gradient_descent(start, step_length, deriv, D, point)
                 steps = point
+                folder = "iterations_limit"
             case _:
                 raise ValueError("Invalid parameter index")
-        points = np.round(points, 2)
+
+        if id_p == 0 or id_p == len(array) // 2 or id_p == len(array) - 1:
+            title = f"step length: {step_length} steps: {steps}"
+            plot(
+                points,
+                title,
+                f"function_{function.__name__}/{folder}/{iteration}/{id_p}.jpg",
+            )
+
+        points = np.round(points, 5)
         result = function(points[-1])
         data.append([np.round(start, 2), step_length, points[-1], result, steps])
     columns_names = [
@@ -35,9 +50,12 @@ def generate_dataframe(array, function, parameter_index, start, step_length, D, 
         "value of the found local minimum",
         "number of steps",
     ]
-    dataframe = pd.DataFrame(data, columns=columns_names).round(2)
+    dataframe = pd.DataFrame(data, columns=columns_names).round(5)
     data_statisctics = (
-        dataframe[scalar_columns].agg(["mean", "std", "min", "max"]).transpose()
+        dataframe[scalar_columns]
+        .agg(["mean", "std", "min", "max"])
+        .transpose()
+        .round(2)
     )
     return dataframe, data_statisctics
 
@@ -63,6 +81,7 @@ def repeat_dataframe_for_points(
             step_length,
             D,
             limit,
+            iteration,
         )
         data.to_csv(f"function_{function.__name__}/{folder_name}/{iteration}.csv")
         statistics.to_csv(

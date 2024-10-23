@@ -1,4 +1,4 @@
 ,mean,std,min,max
 step_length,0.2,0.0,0.2,0.2
-value of the found local minimum,-0.429,0.22840720051309935,-0.55,0.0
-number of steps,1110.82,2561.5859953665995,13.0,8135.0
+value of the found local minimum,-0.43,0.23,-0.55,0.0
+number of steps,983.18,2394.96,13.0,8122.0
