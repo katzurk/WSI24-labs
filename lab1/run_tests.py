@@ -94,10 +94,10 @@ def run_tests_gradient_descent(start, function_name, step_length, D, limit=10000
     # generate points for later tests
     function = f if function_name == "f" else g
     if function == f:
-        start_points = np.random.uniform(D.min(), D.max(), size=200)
+        start_points = np.random.uniform(D.min(), D.max(), size=25)
         test_points = np.random.uniform(D.min(), D.max(), size=10)
     else:
-        start_points = np.random.uniform(D.min(), D.max(), size=(200, 2))
+        start_points = np.random.uniform(D.min(), D.max(), size=(25, 2))
         test_points = np.random.uniform(D.min(), D.max(), size=(10, 2))
 
     # start point
@@ -108,13 +108,13 @@ def run_tests_gradient_descent(start, function_name, step_length, D, limit=10000
     statistics.to_csv(f"function_{function.__name__}/starting_point/1_stat.csv")
 
     # step length
-    step_sizes = np.arange(0, 1.5, 0.05)[1:]
+    step_sizes = np.arange(0, 0.8, 0.05)[1:]
     repeat_dataframe_for_points(
         test_points, step_sizes, 1, step_length, D, "step_length", function, limit
     )
 
     # iterations limit
-    limits = np.arange(1, 200, 2)
+    limits = np.arange(1, 200, 10)
     repeat_dataframe_for_points(
         test_points, limits, 2, step_length, D, "iterations_limit", function, limit
     )

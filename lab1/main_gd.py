@@ -48,7 +48,7 @@ def parse_arguments():
         points, steps = gradient_descent(
             args.start_point, args.step_length, deriv_function, domain, args.step_limit
         )
-        title = f"step length: {args} steps: {steps}"
+        title = f"step length: {args.step_length} steps: {steps}"
         if args.function == "f":
             plot_f(points, title, args.plot_filename)
         else:
