@@ -55,8 +55,17 @@ class Evolutionary_Algorithm:
         return population
 
     def crossing(self, population):
-
-        return 0
+        crossing = []
+        for solution in population:
+            rnd = np.random.rand()
+            if rnd < self.pc:
+                break
+            weights = np.random.rand(len(population))
+            parent_1 = solution
+            parent_2 = np.random_choice([s for s in population if s!=parent_1])
+            child = np.where(weights, parent_1, parent_2)
+            crossing.append(child)
+        return crossing
 
     def succession(self, m_population, grades, m_grades):
         return m_population, m_grades
