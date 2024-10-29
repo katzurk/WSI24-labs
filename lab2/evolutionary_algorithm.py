@@ -3,11 +3,11 @@ import numpy as np
 
 
 class Evolutionary_Algorithm():
-    def __init__(g, matrix, P0, pm, pc, limit):
+    def __init__(g, matrix, P0, sigma, pc, limit):
         self.grade = g
         self.matrix = matrix
         self.population = P0 # vector of specimens
-        self.pm = pm
+        self.sigma = sigma
         self.pc = pc
         self.limit = limit
 
@@ -48,10 +48,14 @@ class Evolutionary_Algorithm():
         return 0
 
     def mutating(self, population):
-        return 0
+        for individual in population:
+            random_normal = np.random_normal(0, 1)
+            individual += self.sigma * random_normal
+        return population
 
     def crossing(self, population):
+
         return 0
 
     def succession(self, m_population, grades, m_grades):
-        return 0
+        return m_population, m_grades
