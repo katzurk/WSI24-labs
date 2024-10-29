@@ -2,11 +2,11 @@ from solution_utils import *
 import numpy as np
 
 
-class Evolutionary_Algorithm():
+class Evolutionary_Algorithm:
     def __init__(g, matrix, P0, sigma, pc, limit):
         self.grade = g
         self.matrix = matrix
-        self.population = P0 # vector of specimens
+        self.population = P0  # vector of specimens
         self.sigma = sigma
         self.pc = pc
         self.limit = limit
@@ -24,7 +24,6 @@ class Evolutionary_Algorithm():
                 o_, x_ = o_t, x_t
             self.population, o = succession(M, o, o_m)
             t += 1
-
 
     def find_best(self, population, grades):
         sorted_p = sorted(zip(grades, population))
@@ -48,9 +47,11 @@ class Evolutionary_Algorithm():
         return 0
 
     def mutating(self, population):
-        for individual in population:
+        for solution in population:
             random_normal = np.random_normal(0, 1)
-            individual += self.sigma * random_normal
+            m_solution = solution + self.sigma * random_normal
+            if validate_solution(self.matrix, m_solution):
+                solution = m_solution
         return population
 
     def crossing(self, population):
