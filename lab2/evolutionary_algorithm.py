@@ -66,23 +66,27 @@ class Evolutionary_Algorithm:
 
     def mutate(self, solution):
         temp_solution = solution[1:-1]
-        i = np.random.randint(0, len(temp_solution)-2)
-        j = np.random.randint(i+2, len(temp_solution))
+        i = np.random.randint(0, len(temp_solution) - 2)
+        j = np.random.randint(i + 2, len(temp_solution))
         part_list = temp_solution[i:j]
         part_list = part_list[::-1]
-        m_solution = solution[:i+1] + part_list + solution[j+1:]
+        m_solution = solution[: i + 1] + part_list + solution[j + 1 :]
         return solution
 
     def crossing(self, population):
         crossing = []
         for s_id, solution in enumerate(population):
-            weights = np.random.choice([0, 1], size=len(solution), p=[self.pc, 1-self.pc])
+            weights = np.random.choice(
+                [0, 1], size=len(solution), p=[self.pc, 1 - self.pc]
+            )
             parent_1 = solution
-            parent_2_id = np.random.choice([i for i in range(len(population)) if i!=s_id])
+            parent_2_id = np.random.choice(
+                [i for i in range(len(population)) if i != s_id]
+            )
             parent_2 = population[parent_2_id]
             child = np.where(weights, parent_1, parent_2)
-            # if validate_solution(self.matrix, child):
-            crossing.append(child)
+            if validate_solution(self.matrix, child):
+                crossing.append(child)
         return crossing
 
     def succession(self, m_population, grades, m_grades):
