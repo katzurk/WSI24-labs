@@ -3,7 +3,7 @@ import numpy as np
 
 
 class Evolutionary_Algorithm:
-    def __init__(g, matrix, P0, sigma, pc, limit):
+    def __init__(self, g, matrix, P0, sigma, pc, limit):
         self.grade = g
         self.matrix = matrix
         self.population = P0  # vector of specimens
@@ -34,25 +34,45 @@ class Evolutionary_Algorithm:
             return 0
         return 1
 
-    def reproduction(self, grades):
+    def reproduction(self, population, grades):
         # roulette selection
         ps = []
         grade_sum = sum(grades)
         for grade in grades:
             ps_i = grade / grade_sum
-        chosen = np.random_choice(self.population, len(self.population), ps)
+            ps.append(ps_i)
+        index = np.arange(len(population))
+        chosen_id = np.random.choice(index, size=len(population), p=ps)
+        chosen = population[chosen_id]
         return chosen
 
     def genetic_operations(self, population):
-        return 0
+        M = mutating(population)
+        C = crossing(M)
+        return C
 
     def mutating(self, population):
+        # inversion or rotation
+        mutating = []
         for solution in population:
-            random_normal = np.random_normal(0, 1)
-            m_solution = solution + self.sigma * random_normal
+            rnd = np.random.rand()
+            if rnd < self.sigma:
+                mutating.append(solution)
+                continue
+            m_solution = mutate(solution)
             if validate_solution(self.matrix, m_solution):
-                solution = m_solution
-        return population
+                mutating.append(m_solution)
+        return mutating
+
+    def mutate(self, solution):
+        temp_solution = solution[1:-1]
+        i, j = np.random.randint(0, len(temp_solution), size=2)
+        while j == i:
+            j = np.random.randint(0, len(temp_solution))
+        part_list = temp_solution[i:j]
+        part_list = part_list[::-1]
+        m_solution = solution[0:i] + part_list + solution[j:-1]
+        return solution
 
     def crossing(self, population):
         crossing = []
@@ -60,11 +80,12 @@ class Evolutionary_Algorithm:
             rnd = np.random.rand()
             if rnd < self.pc:
                 break
-            weights = np.random.rand(len(population))
+            weights = np.random.randint(2, size=len(population))
             parent_1 = solution
-            parent_2 = np.random_choice([s for s in population if s!=parent_1])
+            parent_2 = np.random.choice([s for s in population if s!=parent_1])
             child = np.where(weights, parent_1, parent_2)
-            crossing.append(child)
+            if validate_solution(self.matrix, child):
+                crossing.append(child)
         return crossing
 
     def succession(self, m_population, grades, m_grades):
