@@ -47,9 +47,9 @@ class Evolutionary_Algorithm:
         return chosen
 
     def genetic_operations(self, population):
-        M = mutating(population)
-        C = crossing(M)
-        return C
+        C = crossing(population)
+        M = mutating(C)
+        return M
 
     def mutating(self, population):
         # inversion or rotation
@@ -66,26 +66,23 @@ class Evolutionary_Algorithm:
 
     def mutate(self, solution):
         temp_solution = solution[1:-1]
-        i, j = np.random.randint(0, len(temp_solution), size=2)
-        while j == i:
-            j = np.random.randint(0, len(temp_solution))
+        i = np.random.randint(0, len(temp_solution)-2)
+        j = np.random.randint(i+2, len(temp_solution))
         part_list = temp_solution[i:j]
         part_list = part_list[::-1]
-        m_solution = solution[0:i] + part_list + solution[j:-1]
+        m_solution = solution[:i+1] + part_list + solution[j+1:]
         return solution
 
     def crossing(self, population):
         crossing = []
-        for solution in population:
-            rnd = np.random.rand()
-            if rnd < self.pc:
-                break
-            weights = np.random.randint(2, size=len(population))
+        for s_id, solution in enumerate(population):
+            weights = np.random.choice([0, 1], size=len(solution), p=[self.pc, 1-self.pc])
             parent_1 = solution
-            parent_2 = np.random.choice([s for s in population if s!=parent_1])
+            parent_2_id = np.random.choice([i for i in range(len(population)) if i!=s_id])
+            parent_2 = population[parent_2_id]
             child = np.where(weights, parent_1, parent_2)
-            if validate_solution(self.matrix, child):
-                crossing.append(child)
+            # if validate_solution(self.matrix, child):
+            crossing.append(child)
         return crossing
 
     def succession(self, m_population, grades, m_grades):

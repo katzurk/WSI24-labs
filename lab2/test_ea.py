@@ -19,12 +19,8 @@ def test_reproduction():
     assert case_1 and case_2 or case_1 and not case_2 or not case_1 and case_2
     assert len(chosen) == 2
 
-# def test_mutating():
-#     matrix = [
-#         [1,1,1,1],
-#         [1,1,1,1]
-#     ]
-#     ea = Evolutionary_Algorithm(None, matrix, None, 0.4, None, None)
-#     population = np.array([[1,2,4,6], [3,2,6,8]])
-#     M = ea.mutating(population)
-
+def test_mutation():
+    ea = Evolutionary_Algorithm(None, None, None, 0.4, None, None)
+    population = [[1,2,4,6,7,3,5,9], [3,2,6,8]]
+    M = ea.mutate(population[0])
+    assert sorted(population[0]) == sorted(M)
