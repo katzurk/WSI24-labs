@@ -3,7 +3,8 @@ import pathlib
 
 import numpy as np
 import pandas as pd
-from solution_utils import generate_solution
+from solution_utils import generate_solution, evaluate_solution
+from evolutionary_algorithm import Evolutionary_Algorithm
 
 MINI_CITIES_NUM = 5
 
@@ -42,7 +43,11 @@ def main():
         np.random.seed(args.seed)
 
     data = load_data(args)
-    print(generate_solution(data))
+    population = [generate_solution(data) for i in range(20)]
+    EA = Evolutionary_Algorithm(evaluate_solution, data, population, 0.4, 0.5, 1000)
+    o_, x_ = EA.start_algorithm()
+    print(data)
+    print(o_, x_)
 
 
 if __name__ == "__main__":
