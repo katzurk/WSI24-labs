@@ -44,7 +44,7 @@ def main():
 
     data = load_data(args)
     population = [generate_solution(data) for i in range(20)]
-    EA = Evolutionary_Algorithm(evaluate_solution, data, population, 0.4, 0.5, 1000)
+    EA = Evolutionary_Algorithm(evaluate_solution, data, population, 0.8, 0.6, 10)
     o_, x_ = EA.start_algorithm()
     print(data)
     print(o_, x_)

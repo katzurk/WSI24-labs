@@ -60,7 +60,7 @@ class Evolutionary_Algorithm:
     def mutation(self, population):
         mutation = []
         for solution in population:
-            if np.random.rand() < self.sigma:
+            if np.random.rand() > self.sigma:
                 mutation.append(solution)
                 continue
             m_solution = self._mutation(solution)
@@ -81,7 +81,7 @@ class Evolutionary_Algorithm:
     def crossover(self, population):
         crossover = []
         for idx, solution in enumerate(population):
-            if np.random.rand() < self.pc:
+            if np.random.rand() > self.pc:
                 crossover.append(solution)
                 continue
             parent_1 = solution
@@ -100,13 +100,12 @@ class Evolutionary_Algorithm:
             j = np.random.randint(0, len(parent_1))
         child = [None] * len(parent_1)
         child[i:j] = parent_1[i:j]
-        for idx in range(i, j):
-            if parent_2[idx] not in child:
-                new = parent_2.index(child[idx])
-                child[new] = parent_2[idx]
-        for idx in range(len(parent_1)):
-            if child[idx] is None:
-                child[idx] = parent_2[idx]
+        idx = 0
+        for element in parent_2:
+            if element not in child:
+                while child[idx] is not None:
+                    idx += 1
+                child[idx] = element
         return child
 
     def succession(self, m_population, grades, m_grades):
