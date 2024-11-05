@@ -3,10 +3,10 @@ import numpy as np
 
 
 class Evolutionary_Algorithm:
-    def __init__(self, g, matrix, P0, pm, pc, limit):
+    def __init__(self, g, matrix, size, pm, pc, limit):
         self.grade = g # grading function
         self.matrix = matrix
-        self.population = P0  # vector of solutions, starting population
+        self.population = [generate_solution(self.matrix) for i in range(size)]  # vector of solutions, starting population
         self.pm = pm # probability of mutation
         self.pc = pc # probability of crossover
         self.limit = limit # generation count limit

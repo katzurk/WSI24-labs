@@ -44,11 +44,14 @@ def main():
         np.random.seed(args.seed)
 
     data = load_data(args)
-    population = [generate_solution(data) for i in range(20)]
-    # EA = Evolutionary_Algorithm(evaluate_solution, data, population, 0.8, 0.6, 50)
-    results = run_tests(evaluate_solution, data, population, 0.8, 0.6, 50)
-    print(best_result(results))
+    # EA = Evolutionary_Algorithm(evaluate_solution, data, 35, 0.46, 0.54, 50)
+    # o, x = EA.start_algorithm()
+    results = run_tests(evaluate_solution, data, 35, 0.46, 0.54, 50)
+    o, x = best_result(results)
+    print(o)
+    print(decode_solution(data, x))
     # generate_plot(EA)
+    # print(average_best_parameter(data))
 
 
 if __name__ == "__main__":
