@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from solution_utils import generate_solution, evaluate_solution
 from evolutionary_algorithm import Evolutionary_Algorithm
+from generate_stats import *
 
 MINI_CITIES_NUM = 5
 
@@ -44,10 +45,10 @@ def main():
 
     data = load_data(args)
     population = [generate_solution(data) for i in range(20)]
-    EA = Evolutionary_Algorithm(evaluate_solution, data, population, 0.8, 0.6, )
-    o_, x_ = EA.start_algorithm()
-    print(data)
-    print(o_, x_)
+    # EA = Evolutionary_Algorithm(evaluate_solution, data, population, 0.8, 0.6, 50)
+    results = run_tests(evaluate_solution, data, population, 0.8, 0.6, 50)
+    print(best_result(results))
+    # generate_plot(EA)
 
 
 if __name__ == "__main__":

@@ -3,13 +3,14 @@ import numpy as np
 
 
 class Evolutionary_Algorithm:
-    def __init__(self, g, matrix, P0, sigma, pc, limit):
-        self.grade = g
+    def __init__(self, g, matrix, P0, pm, pc, limit):
+        self.grade = g # grading function
         self.matrix = matrix
-        self.population = P0  # vector of solutions
-        self.sigma = sigma
-        self.pc = pc
-        self.limit = limit
+        self.population = P0  # vector of solutions, starting population
+        self.pm = pm # probability of mutation
+        self.pc = pc # probability of crossover
+        self.limit = limit # generation count limit
+        self.development = [] # best solution of each generation
 
     def start_algorithm(self):
         t = 0
@@ -23,6 +24,7 @@ class Evolutionary_Algorithm:
             if o_t < o_:
                 o_, x_ = o_t, x_t
             self.population, o = self.succession(M, o, o_m)
+            self.development.append((x_, o_))
             t += 1
         return (o_, x_)
 
@@ -42,11 +44,8 @@ class Evolutionary_Algorithm:
     def selection(self, population, grades):
         # roulette selection
         grades_m = [1 / grade for grade in grades]  # less distance - more probable
-        ps = []
         grade_sum = sum(grades_m)
-        for grade in grades_m:
-            ps_i = grade / grade_sum
-            ps.append(ps_i)
+        ps = [grade/grade_sum for grade in grades_m]
         index = np.arange(len(population))
         chosen_id = np.random.choice(index, size=len(population), p=ps, replace=True)
         chosen = np.array(population)[chosen_id]
@@ -60,7 +59,7 @@ class Evolutionary_Algorithm:
     def mutation(self, population):
         mutation = []
         for solution in population:
-            if np.random.rand() > self.sigma:
+            if np.random.rand() > self.pm:
                 mutation.append(solution)
                 continue
             m_solution = self._mutation(solution)
