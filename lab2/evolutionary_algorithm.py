@@ -69,12 +69,10 @@ class Evolutionary_Algorithm:
 
     def _mutation(self, solution):
         # swap mutation
-        temp_solution = solution[1:-1]
-        i, j = np.random.randint(0, len(temp_solution), 2)
+        i, j = np.random.randint(1, len(solution)-1, 2)
         while i == j:
-            j = np.random.randint(0, len(temp_solution))
-        temp_solution[i], temp_solution[j] = temp_solution[j], temp_solution[i]
-        m_solution = [solution[0]] + temp_solution + [solution[-1]]
+            j = np.random.randint(1, len(solution)-1)
+        solution[i], solution[j] = solution[j], solution[i]
         return solution
 
     def crossover(self, population):

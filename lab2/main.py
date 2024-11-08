@@ -55,6 +55,8 @@ def main():
     if args.run_tests:
         stats = avg_std_best_parameter(data)
         stats.to_csv("stats.csv")
+        c_p = crossover_prob_tests(data)
+        c_p.to_csv("crossover_p.csv")
 
     results = generate_results(evaluate_solution, data, 35, 0.46, 0.54, 50)
     solution = best_result(results)
