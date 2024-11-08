@@ -68,7 +68,7 @@ class Evolutionary_Algorithm:
         return mutation
 
     def _mutation(self, solution):
-        # inversion
+        # swap mutation
         temp_solution = solution[1:-1]
         i, j = np.random.randint(0, len(temp_solution), 2)
         while i == j:
@@ -94,6 +94,7 @@ class Evolutionary_Algorithm:
         return crossover
 
     def _crossover(self, parent_1, parent_2):
+        # order crossover (OX)
         i, j = np.random.randint(0, len(parent_1), 2)
         while i == j:
             j = np.random.randint(0, len(parent_1))

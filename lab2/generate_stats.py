@@ -11,7 +11,8 @@ def generate_plot(ea):
     plt.title("Best solution for each generation")
     plt.xlabel("Generation number")
     plt.ylabel("Distance")
-    plt.show()
+    plt.savefig("plot.jpg")
+    plt.close()
 
 def perform_algorithm(grade, data, size, pm, pc, limit):
     EA = Evolutionary_Algorithm(grade, data, size, pm, pc, limit)
@@ -27,8 +28,9 @@ def generate_results(grade, data, size, pm, pc, limit):
     return pd.DataFrame(results)
 
 def best_result(data):
-    result = data.loc[data["grade"].idxmin()]
-    return result
+    result = data.loc[data["grade"].idxmin()].copy()
+    df_result = pd.DataFrame(result).transpose().reset_index(drop=True)
+    return df_result
 
 def compare_parameters(data):
     results = {

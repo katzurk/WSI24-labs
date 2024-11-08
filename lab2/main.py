@@ -53,11 +53,14 @@ def main():
         generate_plot(EA)
 
     if args.run_tests:
-        avg_std_best_parameter(data)
+        stats = avg_std_best_parameter(data)
+        stats.to_csv("stats.csv")
 
     results = generate_results(evaluate_solution, data, 35, 0.46, 0.54, 50)
     solution = best_result(results)
-    print(solution.to_string(index=False))
+    solution.loc[0, "solution"] = decode_solution(data, solution.loc[0, "solution"])
+    print(solution)
+    solution.to_csv("solution.csv")
 
 
 if __name__ == "__main__":
