@@ -22,6 +22,8 @@ def parse_args():
     parser.add_argument("--start", type=str, default="Łomża")
     parser.add_argument("--finish", type=str, default="Częstochowa")
     parser.add_argument("--seed", type=int)
+    parser.add_argument("--visualize", action="store_true")
+    parser.add_argument("--run_tests", action="store_true")
     return parser.parse_args()
 
 
@@ -44,14 +46,18 @@ def main():
         np.random.seed(args.seed)
 
     data = load_data(args)
-    # EA = Evolutionary_Algorithm(evaluate_solution, data, 35, 0.46, 0.54, 50)
-    # o, x = EA.start_algorithm()
-    # results = run_tests(evaluate_solution, data, 35, 0.46, 0.54, 50)
-    # o, x = best_result(results)
-    # print(o)
-    # print(decode_solution(data, x))
-    # generate_plot(EA)
-    print(avg_std_best_parameter(data))
+
+    if args.visualize:
+        EA = Evolutionary_Algorithm(evaluate_solution, data, 35, 0.46, 0.54, 50)
+        EA.start_algorithm()
+        generate_plot(EA)
+
+    if args.run_tests:
+        avg_std_best_parameter(data)
+
+    results = generate_results(evaluate_solution, data, 35, 0.46, 0.54, 50)
+    solution = best_result(results)
+    print(solution.to_string(index=False))
 
 
 if __name__ == "__main__":

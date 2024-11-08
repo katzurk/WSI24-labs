@@ -18,7 +18,7 @@ def perform_algorithm(grade, data, size, pm, pc, limit):
     o_, x_ = EA.start_algorithm()
     return o_, x_
 
-def run_tests(grade, data, size, pm, pc, limit):
+def generate_results(grade, data, size, pm, pc, limit):
     results = []
     for i in range(50):
         o, x = perform_algorithm(grade, data, size, pm, pc, limit)
@@ -26,8 +26,9 @@ def run_tests(grade, data, size, pm, pc, limit):
         results.append(result)
     return pd.DataFrame(results)
 
-def best_result(results):
-    return results.nsmallest(1, "best_grade").iloc[0]
+def best_result(data):
+    result = data.loc[data["grade"].idxmin()]
+    return result
 
 def compare_parameters(data):
     results = {
