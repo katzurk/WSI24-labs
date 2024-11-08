@@ -46,12 +46,12 @@ def main():
     data = load_data(args)
     # EA = Evolutionary_Algorithm(evaluate_solution, data, 35, 0.46, 0.54, 50)
     # o, x = EA.start_algorithm()
-    results = run_tests(evaluate_solution, data, 35, 0.46, 0.54, 50)
-    o, x = best_result(results)
-    print(o)
-    print(decode_solution(data, x))
+    # results = run_tests(evaluate_solution, data, 35, 0.46, 0.54, 50)
+    # o, x = best_result(results)
+    # print(o)
+    # print(decode_solution(data, x))
     # generate_plot(EA)
-    # print(average_best_parameter(data))
+    print(avg_std_best_parameter(data))
 
 
 if __name__ == "__main__":

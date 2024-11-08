@@ -22,47 +22,54 @@ def run_tests(grade, data, size, pm, pc, limit):
     results = []
     for i in range(50):
         o, x = perform_algorithm(grade, data, size, pm, pc, limit)
-        results.append((o, x))
-    return results
+        result = {"grade": o, "solution": x}
+        results.append(result)
+    return pd.DataFrame(results)
 
 def best_result(results):
-    sort_results = sorted(results)
-    return sort_results[0]
+    return results.nsmallest(1, "best_grade").iloc[0]
 
 def compare_parameters(data):
-    population_size = np.arange(0, 50, 5)
-    population_size = population_size[1:]
-    best_g = float('inf')
-    best_p1 = 0
+    results = {
+        "population_size": [],
+        "mutation_p": [],
+        "crossover_p": [],
+        "grade": []
+    }
+
+    population_size = np.arange(5, 50, 5)
     for size in population_size:
         o, x = perform_algorithm(evaluate_solution, data, size, 0.5, 0.5, 50)
-        if o < best_g:
-            best_g = o
-            best_p1 = size
+        results["population_size"].append(size)
+        results["mutation_p"].append(0.5)
+        results["crossover_p"].append(0.5)
+        results["grade"].append(o)
 
     mutation_p = np.arange(0.1, 1, 0.1)
-    best_g = float('inf')
-    best_p2 = 0
     for pm in mutation_p:
         o, x = perform_algorithm(evaluate_solution, data, 20, pm, 0.5, 50)
-        if o < best_g:
-            best_g = o
-            best_p2 = pm
+        results["population_size"].append(20)
+        results["mutation_p"].append(pm)
+        results["crossover_p"].append(0.5)
+        results["grade"].append(o)
 
     crossover_p = np.arange(0.1, 1, 0.1)
-    best_g = float('inf')
-    best_p3 = 0
     for pc in crossover_p:
         o, x = perform_algorithm(evaluate_solution, data, 20, 0.5, pc, 50)
-        if o < best_g:
-            best_g = o
-            best_p3 = pc
+        results["population_size"].append(20)
+        results["mutation_p"].append(0.5)
+        results["crossover_p"].append(pc)
+        results["grade"].append(o)
 
-    return (best_p1, best_p2, best_p3)
+    data_res = pd.DataFrame(results)
+    best_size = data_res.loc[data_res["grade"].idxmin(), "population_size"]
+    best_mp = data_res.loc[data_res["grade"].idxmin(), "mutation_p"]
+    best_cp = data_res.loc[data_res["grade"].idxmin(), "crossover_p"]
 
-def average_best_parameter(data):
-    results = []
-    for i in range(10):
-        results.append(compare_parameters(data))
-    s, m, c = zip(*results)
-    return (sum(s)/len(s), sum(m)/len(m), sum(c)/len(c))
+    return (best_size, best_mp, best_cp)
+
+def avg_std_best_parameter(data):
+    results = [compare_parameters(data) for i in range(10)]
+    df = pd.DataFrame(results, columns=["population_size", "mutation_p", "crossover_p"])
+    stats = df.agg(["mean", "std"]).transpose().round(2)
+    return stats
