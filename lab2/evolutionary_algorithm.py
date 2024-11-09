@@ -4,13 +4,15 @@ import numpy as np
 
 class Evolutionary_Algorithm:
     def __init__(self, g, matrix, size, pm, pc, limit):
-        self.grade = g # grading function
+        self.grade = g  # grading function
         self.matrix = matrix
-        self.population = [generate_solution(self.matrix) for i in range(size)]  # vector of solutions, starting population
-        self.pm = pm # probability of mutation
-        self.pc = pc # probability of crossover
-        self.limit = limit # generation count limit
-        self.development = [] # best solution of each generation
+        self.population = [
+            generate_solution(self.matrix) for i in range(size)
+        ]  # vector of solutions, starting population
+        self.pm = pm  # probability of mutation
+        self.pc = pc  # probability of crossover
+        self.limit = limit  # generation count limit
+        self.development = []  # best solution of each generation
 
     def start_algorithm(self):
         t = 0
@@ -45,7 +47,7 @@ class Evolutionary_Algorithm:
         # roulette selection
         grades_m = [1 / grade for grade in grades]  # less distance - more probable
         grade_sum = sum(grades_m)
-        ps = [grade/grade_sum for grade in grades_m]
+        ps = [grade / grade_sum for grade in grades_m]
         index = np.arange(len(population))
         chosen_id = np.random.choice(index, size=len(population), p=ps, replace=True)
         chosen = np.array(population)[chosen_id]
@@ -69,9 +71,9 @@ class Evolutionary_Algorithm:
 
     def _mutation(self, solution):
         # swap mutation
-        i, j = np.random.randint(1, len(solution)-1, 2)
+        i, j = np.random.randint(1, len(solution) - 1, 2)
         while i == j:
-            j = np.random.randint(1, len(solution)-1)
+            j = np.random.randint(1, len(solution) - 1)
         solution[i], solution[j] = solution[j], solution[i]
         return solution
 
