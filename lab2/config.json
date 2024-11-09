@@ -1,0 +1,6 @@
+{
+    "population_size": 60,
+    "mutation_prob": 0.22,
+    "crossover_prob": 1,
+    "limit": 1000
+}

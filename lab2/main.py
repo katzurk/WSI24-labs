@@ -1,5 +1,6 @@
 import argparse
 import pathlib
+import json
 
 import numpy as np
 import pandas as pd
@@ -23,7 +24,9 @@ def parse_args():
     parser.add_argument("--finish", type=str, default="Częstochowa")
     parser.add_argument("--seed", type=int)
     parser.add_argument("--visualize", action="store_true")
+    parser.add_argument("--plot_filename", type=str, default="plot.jpg")
     parser.add_argument("--run_tests", action="store_true")
+    parser.add_argument("--find_solution", action="store_true")
     return parser.parse_args()
 
 
@@ -47,10 +50,18 @@ def main():
 
     data = load_data(args)
 
+    with open("config.json", "r") as file:
+        config = json.load(file)
+
+    size = config["population_size"]
+    mp = config["mutation_prob"]
+    cp = config["crossover_prob"]
+    limit = config["limit"]
+
     if args.visualize:
-        EA = Evolutionary_Algorithm(evaluate_solution, data, 35, 0.46, 0.54, 50)
+        EA = Evolutionary_Algorithm(evaluate_solution, data, size, mp, cp, limit)
         EA.start_algorithm()
-        generate_plot(EA)
+        generate_plot(EA, args.plot_filename)
 
     if args.run_tests:
         stats = avg_std_best_parameter(data)
@@ -58,11 +69,12 @@ def main():
         c_p = crossover_prob_tests(data)
         c_p.to_csv("crossover_p.csv")
 
-    results = generate_results(evaluate_solution, data, 35, 0.46, 0.54, 50)
-    solution = best_result(results)
-    solution.loc[0, "solution"] = decode_solution(data, solution.loc[0, "solution"])
-    print(solution)
-    solution.to_csv("solution.csv")
+    if args.find_solution:
+        results = generate_results(evaluate_solution, data, size, mp, cp, limit)
+        solution = best_result(results)
+        solution.loc[0, "solution"] = decode_solution(data, solution.loc[0, "solution"])
+        print(solution)
+        solution.to_csv("solution.csv")
 
 
 if __name__ == "__main__":
