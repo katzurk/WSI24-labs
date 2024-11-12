@@ -24,9 +24,9 @@ def perform_algorithm(grade, data, population_size, mutation_p, crossover_p, lim
     return o_, x_
 
 
-def generate_results(grade, data, size, pm, pc, limit):
+def generate_results(grade, data, size, pm, pc, limit, iterations):
     results = []
-    for i in range(10):
+    for i in range(iterations):
         o, x = perform_algorithm(grade, data, size, pm, pc, limit)
         result = {"grade": o, "solution": x}
         results.append(result)

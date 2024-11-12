@@ -31,7 +31,7 @@ def parse_args():
     parser.add_argument("--visualize", action="store_true")
     parser.add_argument("--plot_filename", type=str, default="plot")
     parser.add_argument("--run_tests", action="store_true")
-    parser.add_argument("--find_solution", action="store_true")
+    parser.add_argument("--find_solution", type=int, default=1)
     return parser.parse_args()
 
 
@@ -80,12 +80,11 @@ def main():
         c_p = crossover_prob_tests(data)
         c_p.to_csv("crossover_p.csv")
 
-    if args.find_solution:
-        results = generate_results(evaluate_solution, data, size, mp, cp, limit)
-        solution = best_result(results)
-        solution.loc[0, "solution"] = decode_solution(data, solution.loc[0, "solution"])
-        print(solution)
-        solution.to_csv("solution.csv")
+    results = generate_results(evaluate_solution, data, size, mp, cp, limit, args.find_solution)
+    solution = best_result(results)
+    solution.loc[0, "solution"] = decode_solution(data, solution.loc[0, "solution"])
+    print(solution)
+    solution.to_csv("solution.csv")
 
 
 if __name__ == "__main__":
