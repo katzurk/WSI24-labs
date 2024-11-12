@@ -45,4 +45,15 @@ class MinimaxComputerPlayer(Player):
 
     def get_move(self, event_position):
         # TODO: lab3 - implement algorithm
-        raise NotImplementedError
+        best_score = -float('inf')
+        available_moves = self.game.available_moves()
+        for i in range(len(available_moves)):
+            score = self.MiniMax()
+            if (score > best_score):
+                best_score = score
+                move_id = i
+        return available_moves[move_id]
+
+    def MiniMax(self):
+        return 1;
+
