@@ -29,7 +29,7 @@ def parse_args():
     parser.add_argument("--finish", type=str, default="Częstochowa")
     parser.add_argument("--seed", type=int)
     parser.add_argument("--visualize", action="store_true")
-    parser.add_argument("--plot_filename", type=str, default="plot.jpg")
+    parser.add_argument("--plot_filename", type=str, default="plot")
     parser.add_argument("--run_tests", action="store_true")
     parser.add_argument("--find_solution", action="store_true")
     return parser.parse_args()
