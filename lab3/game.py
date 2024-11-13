@@ -55,5 +55,9 @@ class TicTacToe:
         self.player_x_turn = not self.player_x_turn
         return new_symbol
 
+    def undo_move(self, logical_position):
+        self.board[tuple(logical_position)] = ""
+        self.player_x_turn = not self.player_x_turn
+
     def available_moves(self):
         return np.argwhere((self.board == ""))

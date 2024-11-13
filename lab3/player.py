@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-
+import copy
 import numpy as np
 
 
@@ -45,15 +45,48 @@ class MinimaxComputerPlayer(Player):
 
     def get_move(self, event_position):
         # TODO: lab3 - implement algorithm
-        best_score = -float('inf')
+        score = -float('inf')
         available_moves = self.game.available_moves()
         for i in range(len(available_moves)):
-            score = self.MiniMax()
-            if (score > best_score):
-                best_score = score
+            move = available_moves[i]
+            self.game.move(move)
+            new_score = self.MiniMax(copy.deepcopy(self.game), 0, False)
+            self.game.undo_move(move)
+            if new_score > score:
+                score = new_score
                 move_id = i
         return available_moves[move_id]
 
-    def MiniMax(self):
-        return 1;
+    def MiniMax(self, game, depth, is_max):
+        score_dict = {
+            "x": -1,
+            "o": 1,
+            "t": 0
+        }
+
+        winner = game.get_winner()
+        if winner != "":
+            new_score = score_dict[winner]
+            return new_score
+
+        if is_max:
+            score = -float('inf')
+            available_moves = game.available_moves()
+            for i in range(len(available_moves)):
+                move = available_moves[i]
+                game.move(move)
+                new_score = self.MiniMax(copy.deepcopy(game), depth + 1, False)
+                game.undo_move(move)
+                score = max(score, new_score)
+        else:
+            score = float('inf')
+            available_moves = game.available_moves()
+            for i in range(len(available_moves)):
+                move = available_moves[i]
+                game.move(move)
+                new_score = self.MiniMax(copy.deepcopy(game), depth + 1, True)
+                game.undo_move(move)
+                score = min(score, new_score)
+
+        return score
 
