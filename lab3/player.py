@@ -50,7 +50,7 @@ class MinimaxComputerPlayer(Player):
         for i in range(len(available_moves)):
             move = available_moves[i]
             self.game.move(move)
-            new_score = self.MiniMax(copy.deepcopy(self.game), 0, False)
+            new_score = self.MiniMax(copy.deepcopy(self.game), 10000, False)
             self.game.undo_move(move)
             if new_score > score:
                 score = new_score
@@ -65,9 +65,8 @@ class MinimaxComputerPlayer(Player):
         }
 
         winner = game.get_winner()
-        if winner != "":
-            new_score = score_dict[winner]
-            return new_score
+        if winner != "" or depth == 0:
+            return score_dict.get(winner, 0)
 
         if is_max:
             score = -float('inf')
@@ -75,7 +74,7 @@ class MinimaxComputerPlayer(Player):
             for i in range(len(available_moves)):
                 move = available_moves[i]
                 game.move(move)
-                new_score = self.MiniMax(copy.deepcopy(game), depth + 1, False)
+                new_score = self.MiniMax(copy.deepcopy(game), depth - 1, False)
                 game.undo_move(move)
                 score = max(score, new_score)
         else:
@@ -84,7 +83,7 @@ class MinimaxComputerPlayer(Player):
             for i in range(len(available_moves)):
                 move = available_moves[i]
                 game.move(move)
-                new_score = self.MiniMax(copy.deepcopy(game), depth + 1, True)
+                new_score = self.MiniMax(copy.deepcopy(game), depth - 1, True)
                 game.undo_move(move)
                 score = min(score, new_score)
 

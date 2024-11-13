@@ -1,6 +1,6 @@
 {
     "x": {
-        "type": "human"
+        "type": "minimax"
     },
     "o": {
         "type": "minimax"
