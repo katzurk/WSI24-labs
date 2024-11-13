@@ -10,6 +10,8 @@ __pycache__/
 # C extensions
 *.so
 
+launch.json
+settings.json
 *.csv
 *.jpg
 
