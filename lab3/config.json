@@ -3,7 +3,7 @@
         "type": "minimax"
     },
     "o": {
-        "type": "minimax"
+        "type": "random"
     },
     "gui": true
 }

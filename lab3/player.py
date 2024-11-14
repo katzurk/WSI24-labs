@@ -41,26 +41,31 @@ class RandomComputerPlayer(Player):
 class MinimaxComputerPlayer(Player):
     def __init__(self, game, config):
         super().__init__(game)
+        self.player_x = None
         # TODO: lab3 - load pruning depth from config
 
     def get_move(self, event_position):
         # TODO: lab3 - implement algorithm
+        self.player_x = self.game.player_x_turn
+
         score = -float('inf')
         available_moves = self.game.available_moves()
         for i in range(len(available_moves)):
             move = available_moves[i]
             self.game.move(move)
-            new_score = self.MiniMax(copy.deepcopy(self.game), 10000, False)
+            new_score = self.MiniMax(copy.deepcopy(self.game), 5, False, -float('inf'), float('inf'))
             self.game.undo_move(move)
+            print(move)
             if new_score > score:
                 score = new_score
                 move_id = i
+        print("Chosen ", available_moves[move_id])
         return available_moves[move_id]
 
-    def MiniMax(self, game, depth, is_max):
+    def MiniMax(self, game, depth, is_max, alpha, beta):
         score_dict = {
-            "x": -1,
-            "o": 1,
+            "x": 1 if self.player_x else -1,
+            "o": 1 if not self.player_x else -1,
             "t": 0
         }
 
@@ -74,18 +79,24 @@ class MinimaxComputerPlayer(Player):
             for i in range(len(available_moves)):
                 move = available_moves[i]
                 game.move(move)
-                new_score = self.MiniMax(copy.deepcopy(game), depth - 1, False)
+                new_score = self.MiniMax(copy.deepcopy(game), depth - 1, False, alpha, beta)
                 game.undo_move(move)
                 score = max(score, new_score)
+                alpha = max(alpha, score)
+                if beta <= alpha:
+                    break
         else:
             score = float('inf')
             available_moves = game.available_moves()
             for i in range(len(available_moves)):
                 move = available_moves[i]
                 game.move(move)
-                new_score = self.MiniMax(copy.deepcopy(game), depth - 1, True)
+                new_score = self.MiniMax(copy.deepcopy(game), depth - 1, True, alpha, beta)
                 game.undo_move(move)
                 score = min(score, new_score)
+                alpha = min(alpha, score)
+                if beta <= alpha:
+                    break
 
         return score
 
