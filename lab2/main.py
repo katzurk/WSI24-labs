@@ -73,6 +73,7 @@ def main():
         EA = Evolutionary_Algorithm(evaluate_solution, data, size, mp, cp, limit)
         EA.start_algorithm()
         generate_plot(EA, args.plot_filename)
+        return
 
     if args.run_tests:
         stats = avg_std_best_parameter(data)
