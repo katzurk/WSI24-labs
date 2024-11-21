@@ -55,11 +55,9 @@ class MinimaxComputerPlayer(Player):
             self.game.move(move)
             new_score = self.MiniMax(copy.deepcopy(self.game), 5, False, -float('inf'), float('inf'))
             self.game.undo_move(move)
-            print(move)
             if new_score > score:
                 score = new_score
                 move_id = i
-        print("Chosen ", available_moves[move_id])
         return available_moves[move_id]
 
     def MiniMax(self, game, depth, is_max, alpha, beta):
