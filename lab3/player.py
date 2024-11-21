@@ -50,15 +50,16 @@ class MinimaxComputerPlayer(Player):
 
         score = -float('inf')
         available_moves = self.game.available_moves()
-        for i in range(len(available_moves)):
-            move = available_moves[i]
+        sorted_moves = self.sort_by_heuristic(available_moves)
+        for i in range(len(sorted_moves)):
+            move = sorted_moves[i]
             self.game.move(move)
-            new_score = self.MiniMax(copy.deepcopy(self.game), 5, False, -float('inf'), float('inf'))
+            new_score = self.MiniMax(copy.deepcopy(self.game), 10, False, -float('inf'), float('inf'))
             self.game.undo_move(move)
             if new_score > score:
                 score = new_score
                 move_id = i
-        return available_moves[move_id]
+        return sorted_moves[move_id]
 
     def MiniMax(self, game, depth, is_max, alpha, beta):
         score_dict = {
@@ -74,27 +75,45 @@ class MinimaxComputerPlayer(Player):
         if is_max:
             score = -float('inf')
             available_moves = game.available_moves()
-            for i in range(len(available_moves)):
-                move = available_moves[i]
+            sorted_moves = self.sort_by_heuristic(available_moves)
+            for i in range(len(sorted_moves)):
+                move = sorted_moves[i]
                 game.move(move)
                 new_score = self.MiniMax(copy.deepcopy(game), depth - 1, False, alpha, beta)
                 game.undo_move(move)
                 score = max(score, new_score)
-                alpha = max(alpha, score)
+                alpha = max(alpha, new_score)
                 if beta <= alpha:
                     break
         else:
             score = float('inf')
             available_moves = game.available_moves()
-            for i in range(len(available_moves)):
-                move = available_moves[i]
+            sorted_moves = self.sort_by_heuristic(available_moves)
+            for i in range(len(sorted_moves)):
+                move = sorted_moves[i]
                 game.move(move)
                 new_score = self.MiniMax(copy.deepcopy(game), depth - 1, True, alpha, beta)
                 game.undo_move(move)
                 score = min(score, new_score)
-                alpha = min(alpha, score)
+                beta = min(beta, new_score)
                 if beta <= alpha:
                     break
 
         return score
+
+    def get_heuristic(self, move):
+        grades = {
+            4: [[1, 1]],
+            3: [[0, 0], [0, 2], [2, 0], [2, 2]],
+            2: [[0, 1], [1, 0], [1, 2], [2, 1]]
+        }
+        for grade, vectors in grades.items():
+            vectors = np.array(vectors)
+            if any(np.array_equal(move, vector) for vector in vectors):
+                return grade
+
+    def sort_by_heuristic(self, moves):
+        sorted_moves_id = np.argsort([self.get_heuristic(x) for x in moves])
+        sorted_moves = moves[sorted_moves_id]
+        return sorted_moves[::-1]
 

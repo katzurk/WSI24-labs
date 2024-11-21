@@ -6,7 +6,7 @@ import numpy as np
 
 from gui import GameGUI
 from game import TicTacToe
-from player import build_player
+from player import *
 from game_simulation import GameSimulation
 
 
@@ -34,5 +34,8 @@ if __name__ == "__main__":
         gui.mainloop()
     else:
         # TODO: lab3 - implement non-gui game simulation
+        if isinstance(player_o, HumanPlayer) or isinstance(player_x, HumanPlayer):
+            print("Simulation available only with non-human players")
+            exit(0)
         simulation = GameSimulation(game, player_x, player_o)
-        simulation.start_game(5, True)
+        simulation.start_game(10, True)
