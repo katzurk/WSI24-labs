@@ -54,7 +54,7 @@ class MinimaxComputerPlayer(Player):
         for i in range(len(sorted_moves)):
             move = sorted_moves[i]
             self.game.move(move)
-            new_score = self.MiniMax(copy.deepcopy(self.game), 10, False, -float('inf'), float('inf'))
+            new_score = self.MiniMax(copy.deepcopy(self.game), 1, False, -float('inf'), float('inf'))
             self.game.undo_move(move)
             if new_score > score:
                 score = new_score
@@ -62,15 +62,9 @@ class MinimaxComputerPlayer(Player):
         return sorted_moves[move_id]
 
     def MiniMax(self, game, depth, is_max, alpha, beta):
-        score_dict = {
-            "x": 1 if self.player_x else -1,
-            "o": 1 if not self.player_x else -1,
-            "t": 0
-        }
-
         winner = game.get_winner()
         if winner != "" or depth == 0:
-            return score_dict.get(winner, 0)
+            return self.evaluate_state(game)
 
         if is_max:
             score = -float('inf')
@@ -100,6 +94,34 @@ class MinimaxComputerPlayer(Player):
                     break
 
         return score
+
+    def evaluate_state(self, game):
+        score_dict = {
+            "x": 10 if self.player_x else -10,
+            "o": 10 if not self.player_x else -10,
+            "t": 0
+        }
+
+        winner = game.get_winner()
+        if winner != "":
+            return score_dict.get(winner, 0)
+
+        state_eval = 0
+        x = np.argwhere((game.board == "x"))
+        o = np.argwhere((game.board == "o"))
+
+        for move in x:
+            if score_dict["x"] == 10:
+                state_eval += self.get_heuristic(move)
+            else:
+                state_eval -= self.get_heuristic(move)
+        for move in o:
+            if score_dict["o"] == 10:
+                state_eval += self.get_heuristic(move)
+            else:
+                state_eval -= self.get_heuristic(move)
+        return state_eval
+
 
     def get_heuristic(self, move):
         grades = {

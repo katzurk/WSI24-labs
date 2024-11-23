@@ -1,6 +1,6 @@
 {
     "x": {
-        "type": "minimax"
+        "type": "random"
     },
     "o": {
         "type": "minimax"
