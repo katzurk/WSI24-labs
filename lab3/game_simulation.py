@@ -8,7 +8,7 @@ class GameSimulation:
         self.game = game
         self.results = {"x": 0, "o": 0, "t": 0}
 
-    def start_game(self, iterations=1, display=False):
+    def start_game(self, iterations=1, display=False, change_started=True):
         for i in range(iterations):
             if display: self.display_board()
             while self.game.get_winner() == "":
@@ -19,7 +19,8 @@ class GameSimulation:
                 self.game.move(move)
                 if display: self.display_board()
             self.results[self.game.get_winner()] += 1
-            self.game.play_again()
+            if change_started: self.game.play_again()
+            else: self.game.play_again_same_started()
         self.display_result()
 
     def display_board(self):

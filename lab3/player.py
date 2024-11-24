@@ -43,18 +43,21 @@ class MinimaxComputerPlayer(Player):
         super().__init__(game)
         self.player_x = None
         # TODO: lab3 - load pruning depth from config
+        self.depth = config["depth"]
 
     def get_move(self, event_position):
         # TODO: lab3 - implement algorithm
         self.player_x = self.game.player_x_turn
 
-        score = -float('inf')
+        score = -float("inf")
         available_moves = self.game.available_moves()
         sorted_moves = self.sort_by_heuristic(available_moves)
         for i in range(len(sorted_moves)):
             move = sorted_moves[i]
             self.game.move(move)
-            new_score = self.MiniMax(copy.deepcopy(self.game), 1, False, -float('inf'), float('inf'))
+            new_score = self.MiniMax(
+                self.game, self.depth, False, -float("inf"), float("inf")
+            )
             self.game.undo_move(move)
             if new_score > score:
                 score = new_score
@@ -62,31 +65,35 @@ class MinimaxComputerPlayer(Player):
         return sorted_moves[move_id]
 
     def MiniMax(self, game, depth, is_max, alpha, beta):
+        score_dict = {
+            "x": 1 if self.player_x else -1,
+            "o": 1 if not self.player_x else -1,
+            "t": 0,
+        }
         winner = game.get_winner()
         if winner != "" or depth == 0:
-            return self.evaluate_state(game)
+            return score_dict.get(winner, 0)
+
+        available_moves = game.available_moves()
+        sorted_moves = self.sort_by_heuristic(available_moves)
 
         if is_max:
-            score = -float('inf')
-            available_moves = game.available_moves()
-            sorted_moves = self.sort_by_heuristic(available_moves)
+            score = -float("inf")
             for i in range(len(sorted_moves)):
                 move = sorted_moves[i]
                 game.move(move)
-                new_score = self.MiniMax(copy.deepcopy(game), depth - 1, False, alpha, beta)
+                new_score = self.MiniMax(game, depth - 1, False, alpha, beta)
                 game.undo_move(move)
                 score = max(score, new_score)
                 alpha = max(alpha, new_score)
                 if beta <= alpha:
                     break
         else:
-            score = float('inf')
-            available_moves = game.available_moves()
-            sorted_moves = self.sort_by_heuristic(available_moves)
+            score = float("inf")
             for i in range(len(sorted_moves)):
                 move = sorted_moves[i]
                 game.move(move)
-                new_score = self.MiniMax(copy.deepcopy(game), depth - 1, True, alpha, beta)
+                new_score = self.MiniMax(game, depth - 1, True, alpha, beta)
                 game.undo_move(move)
                 score = min(score, new_score)
                 beta = min(beta, new_score)
@@ -95,39 +102,11 @@ class MinimaxComputerPlayer(Player):
 
         return score
 
-    def evaluate_state(self, game):
-        score_dict = {
-            "x": 10 if self.player_x else -10,
-            "o": 10 if not self.player_x else -10,
-            "t": 0
-        }
-
-        winner = game.get_winner()
-        if winner != "":
-            return score_dict.get(winner, 0)
-
-        state_eval = 0
-        x = np.argwhere((game.board == "x"))
-        o = np.argwhere((game.board == "o"))
-
-        for move in x:
-            if score_dict["x"] == 10:
-                state_eval += self.get_heuristic(move)
-            else:
-                state_eval -= self.get_heuristic(move)
-        for move in o:
-            if score_dict["o"] == 10:
-                state_eval += self.get_heuristic(move)
-            else:
-                state_eval -= self.get_heuristic(move)
-        return state_eval
-
-
     def get_heuristic(self, move):
         grades = {
             4: [[1, 1]],
             3: [[0, 0], [0, 2], [2, 0], [2, 2]],
-            2: [[0, 1], [1, 0], [1, 2], [2, 1]]
+            2: [[0, 1], [1, 0], [1, 2], [2, 1]],
         }
         for grade, vectors in grades.items():
             vectors = np.array(vectors)
@@ -138,4 +117,3 @@ class MinimaxComputerPlayer(Player):
         sorted_moves_id = np.argsort([self.get_heuristic(x) for x in moves])
         sorted_moves = moves[sorted_moves_id]
         return sorted_moves[::-1]
-

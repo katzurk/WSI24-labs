@@ -16,6 +16,10 @@ class TicTacToe:
         self.player_x_turn = self.player_x_started
         self.board = np.zeros((N_ROWS, N_ROWS), dtype=np.str_)
 
+    def play_again_same_started(self):
+        self.player_x_turn = self.player_x_started
+        self.board = np.zeros((N_ROWS, N_ROWS), dtype=np.str_)
+
     def is_free(self, logical_position):
         return self.board[tuple(logical_position)] == ""
 

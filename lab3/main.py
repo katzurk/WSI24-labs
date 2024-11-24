@@ -14,6 +14,9 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=pathlib.Path, required=True, help="Path to game config")
     parser.add_argument("--seed", type=int)
+    parser.add_argument("--turns", type=int, default=1)
+    parser.add_argument("--display_board", action="store_true")
+    parser.add_argument("--change_started", action="store_true")
     return parser.parse_args()
 
 
@@ -38,4 +41,4 @@ if __name__ == "__main__":
             print("Simulation available only with non-human players")
             exit(0)
         simulation = GameSimulation(game, player_x, player_o)
-        simulation.start_game(10, True)
+        simulation.start_game(args.turns, args.display_board, args.change_started)
