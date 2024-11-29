@@ -3,11 +3,11 @@
 ## Treść polecenia
 
 1. Zaimplementować algorytm minimax z obcinaniem α − β grający w kółko i krzyżyk, używając przygotowanego
-w tym repozytorium kodu. 
+w tym repozytorium kodu.
 
 2. Przeprowadzić następujące symulacje gier próbując znaleźć jak najlepsze parametry algorytmu minimax:
    1. Gracz minimax vs gracz losowy
-   2. Gracz minimax vs gracz minimax 
+   2. Gracz minimax vs gracz minimax
 
 3. Rozegrać samemu kilka gier przeciwko:
    1. Graczowi losowemu
