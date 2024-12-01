@@ -1,0 +1,11 @@
+{
+    "x": {
+        "type": "random",
+        "depth": 5
+    },
+    "o": {
+        "type": "minimax",
+        "depth": 2
+    },
+    "gui": false
+}
