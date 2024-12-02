@@ -11,21 +11,20 @@ def get_data():
     X = breast_cancer_wisconsin_diagnostic.data.features
     y = breast_cancer_wisconsin_diagnostic.data.targets
 
-    y.Diagnosis = [1 if value == "M" else 0 for value in y.Diagnosis]
     return X, y
 
-def normalize(X):
+def normalize(X, y):
     scaler = StandardScaler()
     X = scaler.fit_transform(X)
-    return X
+
+    y.loc[:, 'Diagnosis'] = [1 if value == "M" else 0 for value in y['Diagnosis']]
+    y['Diagnosis'] = y['Diagnosis'].astype(int)
+
+    return X, y
 
 def split_data():
     X, y = get_data();
-    X = normalize(X)
-    y = y.values
+    X, y = normalize(X, y)
+    y = y.values.ravel()
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=1)
     return X_train, X_test, y_train, y_test
-
-X_train, X_test, y_train, y_test = split_data()
-print(X_test)
-print(y_test)
