@@ -1,4 +1,5 @@
 import numpy as np
+from sklearn.metrics import accuracy_score, roc_auc_score, f1_score
 
 class LogisticRegression:
     def __init__(self, learning_rate, iterations):
@@ -34,3 +35,15 @@ class LogisticRegression:
         pred = self.sigmoid(np.dot(X, self.weights) + self.bias)
         y = np.where(pred > 0.5, 1, 0)
         return y
+
+    def accuracy(self, y, y_test):
+        score = accuracy_score(y_test, y)
+        return score
+
+    def F1(self, y, y_test):
+        score = f1_score(y_test, y)
+        return score
+
+    def AUROC(self, y, y_test):
+        score = roc_auc_score(y_test, y)
+        return score
