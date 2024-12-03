@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from sklearn.metrics import accuracy_score, roc_auc_score, f1_score
 
 class LogisticRegression:
@@ -44,6 +45,15 @@ class LogisticRegression:
         score = f1_score(y_test, y)
         return score
 
-    def AUROC(self, y, y_test):
+    def auroc(self, y, y_test):
         score = roc_auc_score(y_test, y)
         return score
+
+    def score_comparison(self, y, y_test):
+        scores = {
+            "accuracy": [self.accuracy(y, y_test)],
+            "F1": [self.F1(y, y_test)],
+            "auroc": [self.auroc(y, y_test)]
+        }
+        df =pd.DataFrame.from_dict(scores)
+        return df
