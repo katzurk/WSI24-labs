@@ -7,7 +7,7 @@ warnings.filterwarnings("ignore")
 
 if __name__ == "__main__":
     np.random.seed(0)
-    X, X_test, y, y_test = import_data(False)
+    X, X_test, y, y_test = import_data(exclude_inputs=True, n_columns=3)
     lg = LogisticRegression(0.06, 10000)
     lg.fit(X, y)
     y = lg.predict(X_test)
