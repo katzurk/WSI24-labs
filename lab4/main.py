@@ -28,3 +28,4 @@ if __name__ == "__main__":
     print(lg.score_comparison(y, y_test))
     lg.roc_curve_graph(X_test, y_test)
     lg.weights_graph()
+    lg.costs_graph()

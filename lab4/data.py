@@ -10,6 +10,7 @@ def get_data():
     # data (as pandas dataframes)
     X = breast_cancer_wisconsin_diagnostic.data.features
     y = breast_cancer_wisconsin_diagnostic.data.targets
+    print(X)
 
     y.loc[:, 'Diagnosis'] = [1 if value == "M" else 0 for value in y['Diagnosis']]
     y['Diagnosis'] = y['Diagnosis'].astype(int)

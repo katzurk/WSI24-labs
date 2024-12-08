@@ -5,8 +5,7 @@ from matplotlib import pyplot as plt
 
 class LogisticRegression:
     def __init__(self, learning_rate, iterations):
-        self.weights = None
-        self.bias = None
+        self.theta = None
         self.iterations = iterations
         self.learning_rate = learning_rate
         self.costs =[]
@@ -15,8 +14,7 @@ class LogisticRegression:
         return 1 / (1 + np.exp(-x))
 
     def initialize(self, X):
-        self.weights = np.zeros(X.shape[1]) # weight for each input parameter
-        self.bias = 0
+        self.theta = np.zeros(X.shape[1]) # bias and weight for each input parameter
 
     def cost(self, X, y, pred):
         epsilon = 1e-15
@@ -25,26 +23,26 @@ class LogisticRegression:
         cost = -np.sum(y * np.log(pred) + (1 - y) * np.log(1 - pred)) / np.shape(X)[0]
         return cost
 
-    def fit(self, X, y):
-        self.initialize(X)
-
+    def gradient_descent(self, X, y):
         for i in range(self.iterations):
-            linear = np.dot(X, self.weights) + self.bias
+            linear = np.dot(X, self.theta)
             pred = self.sigmoid(linear)
             cost = self.cost(X, y, pred)
             self.costs.append(cost)
+            gradient = (np.dot(X.transpose(), (pred - y))) / np.shape(X)[0]
+            self.theta -= self.learning_rate * gradient
 
-            diff = pred - y
 
-            dw = np.dot(X.T, diff) / np.shape(X)[0]
-            db = np.sum(diff) / np.shape(X)[0]
+    def fit(self, X, y):
+        X = np.hstack((np.ones((X.shape[0], 1)), X))
+        self.initialize(X)
 
-            self.weights -= self.learning_rate * dw
-            self.bias -= self.learning_rate * db
+        self.gradient_descent(X, y)
 
     def predict(self, X):
-        linear = np.dot(X, self.weights) + self.bias
-        pred = self.sigmoid(np.dot(X, self.weights) + self.bias)
+        X = np.hstack((np.ones((X.shape[0], 1)), X))
+        linear = np.dot(X, self.theta)
+        pred = self.sigmoid(linear)
         y = np.where(pred > 0.5, 1, 0)
         return y
 
@@ -70,7 +68,7 @@ class LogisticRegression:
         return df
 
     def weights_graph(self):
-        plt.bar(range(len(self.weights)), self.weights)
+        plt.bar(range(len(self.theta)), self.theta)
         plt.show()
 
     def costs_graph(self):
@@ -78,11 +76,10 @@ class LogisticRegression:
         plt.show()
 
     def roc_curve_graph(self, X, y_test):
-        linear = np.dot(X, self.weights) + self.bias
-        pred = self.sigmoid(np.dot(X, self.weights) + self.bias)
+        X = np.hstack((np.ones((X.shape[0], 1)), X))
+        linear = np.dot(X, self.theta)
+        pred = self.sigmoid(linear)
         fpr, tpr, thresholds = roc_curve(y_test, pred)
-        print(fpr)
-        print(tpr)
         plt.plot(fpr, tpr)
         plt.xlabel('False Positive Rate')
         plt.ylabel('True Positive Rate')
