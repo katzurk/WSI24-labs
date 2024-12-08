@@ -30,9 +30,9 @@ def normalize(X, y):
 def split_data(X, y):
     return train_test_split(X, y, test_size=0.25, random_state=1)
 
-def import_data(exclude_inputs = False, n_columns = 0, to_normalize = True):
+def import_data(n_columns = 0, to_normalize = True):
     X, y = get_data()
-    if exclude_inputs: X, y = exclude_columns(X, y, n_columns)
+    if n_columns != 0: X, y = exclude_columns(X, y, n_columns)
     if to_normalize: X, y = normalize(X, y)
     X, X_test, y, y_test = split_data(X, y)
     return X, X_test, y, y_test
