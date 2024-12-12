@@ -9,19 +9,17 @@ warnings.filterwarnings("ignore")
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--seed", type=int)
-    parser.add_argument("--learning_rate", type=float, default=0.06)
+    parser.add_argument("--learning-rate", type=float, default=0.06)
     parser.add_argument("--iterations", type=int, default=10000)
-    parser.add_argument("--normalize", action="store_true", default=True)
+    parser.add_argument("--normalize", type=int, default=1)
     parser.add_argument("--exclude-columns", type=int, default=0)
+    parser.add_argument("--correlations", type=int, choices=[0, 1, 2], default=0)
     return parser.parse_args()
 
 if __name__ == "__main__":
     args = parse_args()
 
-    if args.seed is not None:
-        np.random.seed(args.seed)
-
-    X, X_test, y, y_test = import_data(args.exclude_columns, args.normalize)
+    X, X_test, y, y_test = import_data(args.exclude_columns, args.normalize, args.seed, args.correlations)
     lg = LogisticRegression(args.learning_rate, args.iterations)
     lg.fit(X, y)
     y = lg.predict(X_test)

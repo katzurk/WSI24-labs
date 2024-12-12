@@ -69,11 +69,16 @@ class LogisticRegression:
 
     def weights_graph(self):
         plt.bar(range(len(self.theta)), self.theta)
-        plt.show()
+        plt.title("Weight graph")
+        plt.savefig("weights.jpg")
+        plt.close()
 
     def costs_graph(self):
         plt.plot(self.costs)
-        plt.show()
+        plt.title("Costs across iterations")
+        plt.ylim(bottom=0.001)
+        plt.savefig("costs.jpg")
+        plt.close()
 
     def roc_curve_graph(self, X, y_test):
         X = np.hstack((np.ones((X.shape[0], 1)), X))
@@ -81,6 +86,8 @@ class LogisticRegression:
         pred = self.sigmoid(linear)
         fpr, tpr, thresholds = roc_curve(y_test, pred)
         plt.plot(fpr, tpr)
+        plt.title("Roc Curve Graph")
         plt.xlabel('False Positive Rate')
         plt.ylabel('True Positive Rate')
-        plt.show()
+        plt.savefig("roc_curve.jpg")
+        plt.close()
