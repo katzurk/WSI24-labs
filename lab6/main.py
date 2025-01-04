@@ -1,31 +1,51 @@
 import gymnasium as gym
 import numpy as np
+import pickle
+from visualization import plot_q_values_map
 
-def run(episodes, t_max, render=False):
+def run(episodes, training=True, render=False):
     env = gym.make("CliffWalking-v0", render_mode="human" if render else None)
-    Qtable = np.zeros((env.observation_space.n, env.action_space.n))
+    if training:
+        Qtable = np.zeros((env.observation_space.n, env.action_space.n))
+    else:
+        f = open("stuff.pkl", "rb")
+        Qtable = pickle.load(f)
+        f.close()
     learning_rate = 0.9
     discount_factor = 0.9
+    epsilon = 1
+    epsilon_decay = 0.0001
+    rng = np.random.default_rng()
 
     env.action_space.seed(1)
 
     for i in range(episodes):
-        t = 0
         state = env.reset()[0]
-        terminated = False
-        truncated = False
+        done = False
 
-        while (not terminated and not truncated) or t < t_max:
-            action = env.action_space.sample()
+        while not done:
+            if training:
+                action = env.action_space.sample()
+            else:
+                action = np.argmax(Qtable[state,:])
             new_state, reward, terminated, truncated, _ = env.step(action)
-            delta = reward + discount_factor * np.max(Qtable[new_state,:]) - Qtable[state, action]
-            Qtable[state, action] = Qtable[state, action] + learning_rate * delta
+            done = terminated or truncated
+            if training:
+                delta = reward + discount_factor * np.max(Qtable[new_state,:]) - Qtable[state, action]
+                Qtable[state, action] = Qtable[state, action] + learning_rate * delta
             state = new_state
-            t += 1
 
     env.close()
+
+    if training:
+        f = open("stuff.pkl", "wb")
+        pickle.dump(Qtable, f)
+        f.close()
+
+    plot_q_values_map(Qtable)
+
     return Qtable
 
 if __name__ == "__main__":
-    q = run(100, 10)
+    q = run(1, training=False, render=True)
     print(q)
