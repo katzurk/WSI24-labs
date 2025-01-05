@@ -1,5 +1,6 @@
 import pandas as pd
-from pgmpy.estimators import PC
+from pgmpy.estimators import PC, MaximumLikelihoodEstimator
+from pgmpy.models import BayesianNetwork
 import seaborn as sns
 from matplotlib import pyplot as plt
 import logging
@@ -31,7 +32,8 @@ print(data)
 
 est = PC(data)
 skel, seperating_sets = est.build_skeleton(significance_level=0.01)
-
 pdag = est.skeleton_to_pdag(skel, seperating_sets)
+dag = pdag.to_dag()
 
-model = pdag.to_dag()
+model = BayesianNetwork(dag.edges())
+model.fit(data, estimator=MaximumLikelihoodEstimator)
