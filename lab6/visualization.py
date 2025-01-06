@@ -1,6 +1,19 @@
 from matplotlib import pyplot as plt
 import numpy as np
+import pandas as pd
 import seaborn as sns
+
+def postprocess(episodes, rewards, steps):
+    """Convert the results of the simulation in dataframes."""
+    res = pd.DataFrame(
+        data={
+            "Episodes": np.arange(1, episodes+1),
+            "Rewards": rewards,
+            "Steps": steps,
+        }
+    )
+
+    return res
 
 
 def qtable_directions_map(qtable, map_size=(4, 12)):
@@ -45,5 +58,36 @@ def plot_q_values_map(qtable, map_size=(4, 12)):
         spine.set_color("black")
 
     img_title = "policy.jpg"
+    fig.savefig(img_title, bbox_inches="tight")
+    plt.show()
+
+def plot_states_actions_distribution(states, actions, map_size=(4, 12)):
+    """Plot the distributions of states and actions."""
+    labels = {"UP": 0, "RIGHT": 1, "DOWN": 2, "LEFT": 3}
+
+    fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(15, 5))
+    sns.histplot(data=states, ax=ax[0], kde=True)
+    ax[0].set_title("States")
+    sns.histplot(data=actions, ax=ax[1])
+    ax[1].set_xticks(list(labels.values()), labels=labels.keys())
+    ax[1].set_title("Actions")
+    fig.tight_layout()
+    img_title = f"states_action_distribution.jpg"
+    fig.savefig(img_title, bbox_inches="tight")
+    plt.show()
+
+def plot_steps_and_rewards(res_df):
+    """Plot the steps and rewards from the dataframe."""
+    fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(15, 5))
+    sns.lineplot(
+        data=res_df, x="Episodes", y="Rewards", ax=ax[0]
+    )
+    ax[0].set(ylabel="Total rewards")
+
+    sns.lineplot(data=res_df, x="Episodes", y="Steps", ax=ax[1])
+    ax[1].set(ylabel="Steps number")
+
+    fig.tight_layout()
+    img_title = "steps_and_rewards.jpg"
     fig.savefig(img_title, bbox_inches="tight")
     plt.show()
