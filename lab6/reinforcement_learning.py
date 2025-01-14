@@ -38,6 +38,7 @@ class ReinforcementLearning:
 
         for i in range(self.episodes):
             state = self.env.reset()[0]
+            all_states.append(state)
             step = 0
             total_reward = 0
             done = False
@@ -55,7 +56,7 @@ class ReinforcementLearning:
                 done = terminated or truncated
                 if self.training:
                     all_actions.append(action)
-                    all_states.append(state)
+                    all_states.append(new_state)
 
                     delta = reward + self.discount_factor * np.max(self.Qtable[new_state,:]) - self.Qtable[state, action]
                     self.Qtable[state, action] = self.Qtable[state, action] + self.learning_rate * delta
@@ -77,6 +78,7 @@ class ReinforcementLearning:
             self.save_Qtable()
             res = postprocess(self.episodes, rewards, steps)
             print(res)
+            res.to_csv("learning.csv")
             plot_states_actions_distribution(all_states, all_actions)
             plot_steps_and_rewards(res)
 
