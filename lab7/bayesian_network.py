@@ -55,8 +55,8 @@ def visualize_distribution(cpd):
     plt.figure(figsize=(10, 6))
     plt.barh(state, cpd.values)
     plt.title(f"Distribution of {var}")
-    plt.xlabel(str(var))
-    plt.ylabel("Distribution")
+    plt.ylabel(str(var))
+    plt.xlabel("Distribution")
 
     plt.savefig(f"bars/{var}.jpg")
 
